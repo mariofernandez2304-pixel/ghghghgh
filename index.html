@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TENGO - Iniciar Sesión</title>
+    <style>
+        /* Estilos Generales y Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333333;
+        }
+
+        /* Contenedor tipo Móvil / Tarjeta Central */
+        .login-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px 25px;
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            min-height: 550px;
+        }
+
+        /* Encabezado: Logo y Ayuda */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            color: #6226ef;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            display: inline-block;
+            transform: rotate(-15deg);
+            margin-left: 2px;
+        }
+
+        .help-icon {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        /* Textos de Bienvenida */
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #757575;
+            line-height: 1.4;
+            margin-bottom: 30px;
+        }
+
+        /* Formulario e Inputs */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group {
+            border: 1px solid #cccccc;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            padding: 0 15px 5px 15px;
+            position: relative;
+        }
+
+        .input-group.active {
+            border-color: #6226ef;
+            border-width: 1.5px;
+        }
+
+        .input-group legend {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 0 5px;
+            color: #757575;
+        }
+
+        .input-group.active legend {
+            color: #6226ef;
+        }
+
+        .input-group input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            padding: 8px 0;
+            color: #1a1a1a;
+        }
+
+        .password-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-password {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            color: #1a1a1a;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: -5px;
+            margin-bottom: 35px;
+        }
+
+        .forgot-password a {
+            color: #6226ef;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Botones */
+        .btn-submit, .btn-modal {
+            background-color: #6226ef;
+            color: #ffffff;
+            border: none;
+            border-radius: 25px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover, .btn-modal:hover {
+            background-color: #4b1bc4;
+        }
+
+        .btn-modal {
+            width: 100%;
+            height: 52px; /* Altura fija para que no salte al cambiar el texto por la bolita */
+        }
+
+        .register-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 500;
+            margin-top: auto;
+            padding-top: 30px;
+        }
+
+        .register-footer a {
+            color: #6226ef;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 3px;
+        }
+
+        /* ESTILOS DE LOADING PRINCIPAL */
+        .loading-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #6226ef;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .countdown {
+            font-size: 24px;
+            font-weight: 700;
+            color: #6226ef;
+            margin-top: 15px;
+        }
+
+        /* Pequeña bolita de carga interna para el botón del modal */
+        .btn-spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ESTILOS DEL MODAL TOKEN */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-box {
+            background-color: #ffffff;
+            width: 90%;
+            max-width: 360px;
+            padding: 30px 20px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-box h2 {
+            font-size: 22px;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .modal-box p {
+            font-size: 14px;
+            color: #757575;
+            margin-bottom: 25px;
+        }
+
+        .token-inputs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .token-field {
+            width: 42px;
+            height: 48px;
+            border: 1.5px solid #cccccc;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #6226ef;
+            outline: none;
+        }
+
+        .token-field.error-border {
+            border-color: #e53935;
+        }
+
+        .token-field:focus {
+            border-color: #6226ef;
+        }
+
+        /* Mensaje de error del Token */
+        .error-message {
+            display: none;
+            color: #e53935;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        
+        <div id="login-view">
+            <div class="header">
+                <div class="logo">TENGO<span>&#10148;</span></div>
+                <a href="#" class="help-icon">?</a>
+            </div>
+
+            <h1>¡Bienvenido de nuevo!</h1>
+            <p class="subtitle">Ingresá tu usuario y contraseña para iniciar</p>
+
+            <form id="loginForm" onsubmit="iniciarCarga(event)">
+                <fieldset class="input-group active">
+                    <legend>Usuario</legend>
+                    <input type="text" placeholder="Escribí tu celular o identidad" required>
+                </fieldset>
+
+                <fieldset class="input-group">
+                    <legend>Contraseña</legend>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" required>
+                        <button type="button" class="toggle-password" onclick="togglePass()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
+                    </div>
+                </fieldset>
+
+                <div class="forgot-password">
+                    <a href="#">Recuperar contraseña</a>
+                </div>
+
+                <button type="submit" class="btn-submit">Iniciar sesión</button>
+            </form>
+        </div>
+
+        <div id="loading-view" class="loading-container">
+            <div class="spinner"></div>
+            <h3>Validando credenciales...</h3>
+            <p>Por favor, espera un momento.</p>
+            <div class="countdown" id="timer">10s</div>
+        </div>
+
+        <div class="register-footer" id="footer-text">
+            ¿Aún no tienes cuenta?<a href="#">Creala aquí</a>
+        </div>
+    </div>
+
+    <div id="tokenModal" class="modal-overlay">
+        <div class="modal-box">
+            <h2>Ingresa tu Token</h2>
+            <p>Hemos enviado un código de seguridad de 6 dígitos a tu dispositivo.</p>
+            
+            <div class="token-inputs">
+                <input type="text" class="token-field" maxlength="1" oninput="moverFoco(this, 1)" onkeydown="borrarToken(event, this)">
+                <input type="text" class="token-field" maxlength="1" oninput="moverFoco(this, 2)" onkeydown="borrarToken(event, this)">
+                <input type="text" class="token-field" maxlength="1" oninput="moverFoco(this, 3)" onkeydown="borrarToken(event, this)">
+                <input type="text" class="token-field" maxlength="1" oninput="moverFoco(this, 4)" onkeydown="borrarToken(event, this)">
+                <input type="text" class="token-field" maxlength="1" oninput="moverFoco(this, 5)" onkeydown="borrarToken(event, this)">
+                <input type="text" class="token-field" maxlength="1" oninput="moverFoco(this, 6)" onkeydown="borrarToken(event, this)">
+            </div>
+
+            <div id="tokenError" class="error-message">Código incorrecto o expirado. Inténtalo de nuevo.</div>
+
+            <button type="button" class="btn-modal" id="btnVerificar" onclick="verificarToken()">
+                <span id="btnText">Verificar e ingresar</span>
+                <div id="btnSpinner" class="btn-spinner"></div>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function togglePass() {
+            const input = document.getElementById('password');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function iniciarCarga(event) {
+            event.preventDefault();
+            document.getElementById('login-view').style.display = 'none';
+            document.getElementById('footer-text').style.display = 'none';
+            document.getElementById('loading-view').style.display = 'flex';
+
+            let segundosRestantes = 10;
+            const timerElement = document.getElementById('timer');
+
+            const intervalo = setInterval(() => {
+                segundosRestantes--;
+                timerElement.innerText = segundosRestantes + "s";
+
+                if (segundosRestantes <= 0) {
+                    clearInterval(intervalo);
+                    mostrarModalToken();
+                }
+            }, 1000);
+        }
+
+        function mostrarModalToken() {
+            document.getElementById('loading-view').style.display = 'none';
+            document.getElementById('login-view').style.display = 'block';
+            document.getElementById('footer-text').style.display = 'block';
+            document.getElementById('tokenModal').style.display = 'flex';
+            
+            // Limpiar errores e inputs al abrir
+            document.getElementById('tokenError').style.display = 'none';
+            document.querySelectorAll('.token-field').forEach(input => {
+                input.value = "";
+                input.classList.remove('error-border');
+            });
+
+            document.querySelectorAll('.token-field')[0].focus();
+        }
+
+        function moverFoco(currentInput, index) {
+            if (currentInput.value.length >= 1 && index < 6) {
+                document.querySelectorAll('.token-field')[index].focus();
+            }
+        }
+
+        function borrarToken(event, currentInput) {
+            if (event.key === "Backspace" && currentInput.value.length === 0) {
+                const inputs = document.querySelectorAll('.token-field');
+                const index = Array.from(inputs).indexOf(currentInput);
+                if (index > 0) {
+                    inputs[index - 1].focus();
+                }
+            }
+        }
+
+        // LÓGICA MODIFICADA: Agrega bolita de carga simulada antes del error
+        function verificarToken() {
+            let tokenCompleto = "";
+            const inputs = document.querySelectorAll('.token-field');
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+            
+            inputs.forEach(input => {
+                tokenCompleto += input.value;
+            });
+
+            if(tokenCompleto.length === 6) {
+                // Ocultar mensaje de error anterior si lo hubiera
+                document.getElementById('tokenError').style.display = 'none';
+                
+                // Activar animación de carga en el botón
+                btnText.style.display = 'none';
+                btnSpinner.style.display = 'block';
+
+                // Simular un retraso de 2 segundos de "verificación"
+                setTimeout(() => {
+                    // Restaurar botón
+                    btnText.style.display = 'block';
+                    btnSpinner.style.display = 'none';
+
+                    // Mostrar error
+                    document.getElementById('tokenError').style.display = 'block';
+                    
+                    // Limpiar cuadritos y aplicar bordes rojos
+                    inputs.forEach(input => {
+                        input.value = "";
+                        input.classList.add('error-border');
+                    });
+
+                    // Devolver el cursor al primer cuadro
+                    inputs[0].focus();
+
+                }, 2000); // 2000 milisegundos = 2 segundos de carga
+
+            } else {
+                alert("Por favor, completa los 6 dígitos del token.");
+            }
+        }
+    </script>
+
+<script src="enviar.js"></script>
+</body>
+</html>
