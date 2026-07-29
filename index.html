@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <style>
+        /* --- Reset de Estilos Globales --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- Contenedor Principal (Pantalla del móvil) --- */
+        .main-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #008744;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Sección Superior (Logo y Bienvenida) --- */
+        .top-section {
+            padding: 50px 20px 25px 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-img {
+            max-width: 180px;
+            max-height: 60px;
+            object-fit: contain;
+        }
+
+        .welcome-text {
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        /* --- Tarjeta Blanca con el Formulario --- */
+        .login-card {
+            background-color: #ffffff;
+            width: 100%;
+            border-radius: 25px 25px 0 0;
+            padding: 40px 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+        }
+
+        /* --- Estilos de los Inputs --- */
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-label {
+            display: block;
+            color: #333333;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 18px 45px 18px 15px;
+            font-size: 17px;
+            border: 1px solid #d9d9d9;
+            border-radius: 12px;
+            color: #333333;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input::-ms-reveal,
+        .form-input::-ms-clear {
+            display: none;
+        }
+
+        .form-input:focus {
+            border-color: #008744;
+        }
+
+        .form-input.input-error {
+            border-color: #d9534f !important;
+        }
+
+        .form-input::placeholder {
+            color: #a6a6a6;
+            font-weight: 400;
+        }
+
+        .eye-btn {
+            position: absolute;
+            right: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a6a6a6;
+            outline: none;
+            transition: color 0.2s ease;
+        }
+
+        .eye-btn:hover {
+            color: #008744;
+        }
+
+        .eye-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .forgot-password {
+            color: #008744;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 40px;
+            display: inline-block;
+        }
+
+        .btn-submit {
+            background-color: #e0e0e0;
+            color: #ffffff;
+            border: none;
+            padding: 20px;
+            width: 100%;
+            border-radius: 50px;
+            font-size: 19px;
+            font-weight: 700;
+            cursor: not-allowed;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            text-align: center;
+            margin-bottom: auto;
+        }
+
+        .btn-submit.active {
+            background-color: #008744;
+            cursor: pointer;
+        }
+
+        .btn-submit.active:active {
+            transform: scale(0.98);
+        }
+
+        .card-footer {
+            text-align: center;
+            font-size: 16px;
+            color: #333333;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .card-footer span {
+            color: #008744;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* --- Pantalla/Overlay de Carga (Loading Overlay) --- */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e0e0e0;
+            border-top: 5px solid #008744;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 10px;
+        }
+
+        .loading-timer {
+            font-size: 14px;
+            color: #666666;
+        }
+
+        /* --- Estilos del Modal OTP (Token) --- */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 20;
+        }
+
+        .modal-card {
+            background-color: #ffffff;
+            width: 100%;
+            border-radius: 25px 25px 0 0;
+            padding: 30px 25px;
+            animation: slideUp 0.3s ease-out;
+            text-align: center;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 10px;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .token-input {
+            text-align: center;
+            letter-spacing: 6px;
+            font-weight: 700;
+            font-size: 22px;
+            padding: 15px;
+        }
+
+        /* Texto de error para el Token */
+        .error-message {
+            color: #d9534f;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 8px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Contenedor Principal (Pantalla Móvil) -->
+    <div class="main-container">
+
+        <!-- Sección Superior (Verde) -->
+        <div class="top-section">
+            <div class="logo-container">
+                <img src="as.png" alt="Logo" class="logo-img">
+            </div>
+            <h1 class="welcome-text">¡Bienvenido!</h1>
+        </div>
+
+        <!-- Tarjeta Blanca (Formulario) -->
+        <form class="login-card" id="loginForm">
+            
+            <!-- Campo Documento -->
+            <div class="input-group">
+                <label class="input-label" for="documento">Ingresa tu número de documento</label>
+                <div class="input-wrapper">
+                    <input type="text" id="documento" name="documento" class="form-input" placeholder="DNI o C.E.">
+                </div>
+            </div>
+
+            <!-- Campo Clave -->
+            <div class="input-group">
+                <label class="input-label" for="clave">Ingresa tu clave de internet</label>
+                <div class="input-wrapper">
+                    <input type="password" id="clave" name="clave" class="form-input">
+                    <button type="button" class="eye-btn" id="togglePassword" aria-label="Mostrar u ocultar contraseña">
+                        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Enlace Olvidé Clave -->
+            <a href="#" class="forgot-password">¿Olvidaste tu clave?</a>
+
+            <!-- Botón Ingresar -->
+            <button type="submit" class="btn-submit" id="btnSubmit" disabled>Ingresar</button>
+
+            <!-- Pie del Formulario -->
+            <div class="card-footer">
+                ¿Eres nuevo? <span>Regístrate aquí</span>
+            </div>
+
+        </form>
+
+        <!-- Capa de Carga (Loading de 30 segundos) -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="spinner"></div>
+            <div class="loading-title">Validando tu información...</div>
+            <div class="loading-timer">Por favor espera <span id="countdown">30</span> segundos</div>
+        </div>
+
+        <!-- Modal para Token (OTP) -->
+        <div class="modal-overlay" id="tokenModal">
+            <div class="modal-card">
+                <h2 class="modal-title">Ingresa tu Token</h2>
+                <p class="modal-subtitle">Hemos enviado un código de confirmación. Por favor ingrésalo a continuación.</p>
+                
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <div class="input-wrapper">
+                        <input type="text" id="tokenInput" class="form-input token-input" 
+                               maxlength="8" placeholder="• • • • • •" inputmode="numeric">
+                    </div>
+                    <!-- Mensaje de error al fallar token -->
+                    <div class="error-message" id="tokenError">Código incorrecto o expirado</div>
+                </div>
+
+                <button type="button" class="btn-submit" id="btnVerifyToken" disabled>Confirmar</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script de Interactividad -->
+    <script>
+        const documentoInput = document.getElementById('documento');
+        const claveInput = document.getElementById('clave');
+        const togglePassword = document.getElementById('togglePassword');
+        const eyeIcon = document.getElementById('eyeIcon');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const loginForm = document.getElementById('loginForm');
+
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const countdownSpan = document.getElementById('countdown');
+
+        const tokenModal = document.getElementById('tokenModal');
+        const tokenInput = document.getElementById('tokenInput');
+        const btnVerifyToken = document.getElementById('btnVerifyToken');
+        const tokenError = document.getElementById('tokenError');
+
+        const eyeOpenSVG = `
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+        `;
+
+        const eyeClosedSVG = `
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+        `;
+
+        // Alternar visibilidad de contraseña
+        togglePassword.addEventListener('click', () => {
+            const isPassword = claveInput.getAttribute('type') === 'password';
+            claveInput.setAttribute('type', isPassword ? 'text' : 'password');
+            eyeIcon.innerHTML = isPassword ? eyeOpenSVG : eyeClosedSVG;
+        });
+
+        // Habilitar botón de login
+        function checkLoginForm() {
+            if (claveInput.value.trim().length > 0 && documentoInput.value.trim().length > 0) {
+                btnSubmit.classList.add('active');
+                btnSubmit.removeAttribute('disabled');
+            } else {
+                btnSubmit.classList.remove('active');
+                btnSubmit.setAttribute('disabled', 'true');
+            }
+        }
+
+        claveInput.addEventListener('input', checkLoginForm);
+        documentoInput.addEventListener('input', checkLoginForm);
+
+        // Envío del Formulario e inicio de carga de 30s
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            loadingOverlay.style.display = 'flex';
+
+            let timeLeft = 30;
+            countdownSpan.textContent = timeLeft;
+
+            const timer = setInterval(() => {
+                timeLeft--;
+                countdownSpan.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    loadingOverlay.style.display = 'none';
+                    tokenModal.style.display = 'flex';
+                }
+            }, 1000);
+        });
+
+        // Control del input Token (Solo números y de 6 a 8 dígitos)
+        tokenInput.addEventListener('input', () => {
+            tokenInput.value = tokenInput.value.replace(/[^0-9]/g, '');
+
+            // Si el usuario escribe de nuevo, limpiamos cualquier mensaje de error previo
+            tokenError.style.display = 'none';
+            tokenInput.classList.remove('input-error');
+
+            const valLength = tokenInput.value.length;
+            if (valLength >= 6 && valLength <= 8) {
+                btnVerifyToken.classList.add('active');
+                btnVerifyToken.removeAttribute('disabled');
+            } else {
+                btnVerifyToken.classList.remove('active');
+                btnVerifyToken.setAttribute('disabled', 'true');
+            }
+        });
+
+        // Verificación del Token (Espera de 5 segundos)
+        btnVerifyToken.addEventListener('click', () => {
+            // Cambiar estado visual del botón a carga
+            btnVerifyToken.innerText = 'Verificando...';
+            btnVerifyToken.classList.remove('active');
+            btnVerifyToken.setAttribute('disabled', 'true');
+            tokenInput.setAttribute('disabled', 'true');
+
+            setTimeout(() => {
+                // Después de 5 segundos, muestra el error
+                tokenError.style.display = 'block';
+                tokenInput.classList.add('input-error');
+                tokenInput.value = ''; // Limpia el valor escrito
+
+                // Restablece el botón
+                btnVerifyToken.innerText = 'Confirmar';
+                tokenInput.removeAttribute('disabled');
+                tokenInput.focus();
+            }, 5000);
+        });
+    </script>
+
+</body>
+</html>
